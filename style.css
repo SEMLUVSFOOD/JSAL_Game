@@ -1,0 +1,250 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #282828;
+    color: white;
+    display: flex;
+    justify-content: space-be;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  #header {
+    margin-bottom: 30px;
+  }
+  
+  #title {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  
+  #subtitle {
+    font-size: 1.2em;
+    color: #c4c4c4;
+  }
+  
+  #sentence-container {
+    font-size: 1.5em;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    color: black;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  #guess-input {
+    width: 60%;
+    padding: 10px;
+    font-size: 1.5em;
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+
+  #character-input {
+    width: 60%;
+    padding: 10px;
+    font-size: 1.5em;
+    margin-top: 20px;
+    border-radius: 8px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 1.5em;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    background-color: rgb(63, 165, 63);
+    color: black;
+    border: none;
+  }
+  
+  #score, #high-score, #feedback {
+    margin-top: 20px;
+    font-size: 1.2em;
+  }
+  
+
+  .score {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 20px;
+  }
+
+  .answeringDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 20px;
+  }
+
+  .progress-container {
+    width: 60%; 
+    background: #ddd; 
+    height: 20px;
+  }
+
+  .myAdvert {
+    color: white;
+  }
+  .myAdvert:hover {
+    color: rgb(194, 194, 194);
+    transition: 0.3s;
+  }
+
+
+
+
+
+
+  /* Toggle Switch Base Styles */
+.toggle-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1rem;
+    user-select: none;
+  }
+  
+  .toggle-switch input {
+    display: none;
+  }
+  
+  .toggle-switch .slider {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    background-color: #ccc;
+    border-radius: 50px;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+  }
+  
+  .toggle-switch .slider::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+  
+  /* Checked state */
+  .toggle-switch input:checked + .slider {
+    background-color: #4caf50;
+  }
+  
+  .toggle-switch input:checked + .slider::before {
+    transform: translateX(24px);
+  }
+  
+  /* Optional label text next to toggle */
+  .toggle-switch .label-text {
+    margin-left: 5px;
+  }
+
+  
+  .info-icon {
+    position: relative;
+    display: inline-block;
+    margin-left: 8px;
+    background-color: #ddd;
+    color: #333;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    width: max-content;
+    max-width: 90vw;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    padding: 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 999;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: normal;
+    box-sizing: border-box;
+  }
+  
+  /* Prevent it from overflowing left/right */
+  .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }  
+  
+  /* Show tooltip on hover (desktop) */
+  .info-icon:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* Also show tooltip on focus/click (mobile/tablet) */
+  .info-icon:focus .tooltip-text,
+  .info-icon:active .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }  
+
+
+
+  @media (max-width: 1000px) { 
+    #guess-input {
+        width: 100%;
+    }
+    #character-input {
+        width: 100%;
+    }
+    .progress-container {
+        width: 100%; 
+    }
+}
+
+@media (max-width: 600px) {
+    .tooltip-text {
+      top: auto;
+      bottom: 125%;
+      transform: translateX(-75%);
+    }
+  
+    .tooltip-text::after {
+      top: 100%;
+      bottom: auto;
+      border-color: #333 transparent transparent transparent;
+    }
+  }
+  

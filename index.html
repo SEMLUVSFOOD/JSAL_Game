@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jack Channel Guesser</title>
+  <link rel="stylesheet" href="style.css" />
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div id="header">
+    <div id="title">JackSucksAtLife Channel Guesser</div>
+    <div id="subtitle">Guess which channel the video title is from!</div>
+  </div>
+
+  <div id="hard-mode-toggle" style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+    <label class="toggle-switch" for="hard-mode-checkbox">
+      <input type="checkbox" id="hard-mode-checkbox">
+      <span class="slider"></span>
+    </label>
+    <span class="label-text">Hard Mode</span>
+  </div>
+
+  <div id="sentence-container">"Loading..."</div>
+
+  <div class="answeringDiv">
+    <input id="guess-input" list="channel-names" placeholder="Guess the channel..." />
+    <datalist id="channel-names"></datalist>
+    <button id="guess-button">Guess</button>
+    <button id="try-again-button" style="display:none">Try Again</button>  
+    <div id="feedback"></div>
+  </div>
+
+  <div class="progress-container">
+    <div class="progressToHighScore" style="height: 100%; background: #4caf50; width: 0%; transition: width 0.3s;"></div>
+    <div class="score">
+        <div id="score">Score: 0</div>
+        <div id="high-score">High Score: 0</div>
+    </div>
+  </div>
+</body>
+</html>
