@@ -3,25 +3,20 @@ body {
   background-color: #282828;
   display: flex;
   align-items: center;
-  flex-direction: row; 
   justify-content: center; /* Ensures the content is centered vertically */
-  align-items: center;
   height: 100vh; /* Make sure the body takes the full viewport height */
-  width: 100vw;
+  gap: 15vw;
 }
 
 .channelButtons {
-  width: 50vw;
   display: grid;
   grid-template-columns: repeat(2, 1fr); /* Create 2 columns */
   gap: 3vw; /* Space between buttons */
   justify-items: center; /* Centers the buttons horizontally in each grid cell */
   align-items: center; /* Centers the buttons vertically in each grid cell */
-}
-.thumbnailDIV {
-  width: 50vw;
-  display: flex;
-  justify-content: center;
+  padding: 50px;
+  border: #a3a3a3 3px solid;
+  border-radius: 26px;
 }
 
 .channelButtons button img {
@@ -45,5 +40,14 @@ body {
 }
 
 #thumbnail {
-  scale: 75%;
+  width: 960px; 
+  height: 720px;
+}
+
+.thumbnailDIV {
+  display: flex;
+  justify-content: center;
+  padding: 50px;
+  border: #a3a3a3 3px solid;
+  border-radius: 26px;
 }

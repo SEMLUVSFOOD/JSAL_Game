@@ -28,37 +28,69 @@ function getRandomVideoIdFromChannel(channelId, channelName) {
         throw new Error('No videos found');
       }
 
-      // Filter out videos that are less than 60 seconds (Shorts)
-      const longVideos = responseData.items.filter(item => item.snippet.title && item.snippet.title.length > 0);
+      // Get the video IDs from the search results
+      const videoIds = responseData.items.map(item => item.id.videoId).join(',');
 
-      if (longVideos.length === 0) {
-        throw new Error('No valid long videos found');
-      }
+      // Now, make another API request to fetch the content details (including duration) of these videos
+      const videoDetailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoIds}&part=contentDetails,snippet`;
 
-      // Remove used videos from the list
-      const availableVideos = longVideos.filter(video => !usedVideos.has(video.id.videoId));
+      return fetch(corsProxy + encodeURIComponent(videoDetailsUrl))
+        .then(response => response.json())
+        .then(detailData => {
+          // Filter out videos that are shorter than 60 seconds (YouTube Shorts)
+          const longVideos = detailData.items.filter(item => {
+            const duration = item.contentDetails.duration;
+            const videoDuration = parseDurationToSeconds(duration);
 
-      if (availableVideos.length === 0) {
-        // If all videos have been used, reset the usedVideos set
-        usedVideos.clear();
-      }
+            // Log duration for debugging
+            console.log(`Video: ${item.snippet.title} - Duration: ${videoDuration} seconds`);
 
-      // Pick a random video that has not been used yet
-      const randomIndex = Math.floor(Math.random() * availableVideos.length);
-      const videoId = availableVideos[randomIndex].id.videoId;
+            return videoDuration > 60;  // Only keep videos longer than 60 seconds
+          });
 
-      // Mark the video as used
-      usedVideos.add(videoId);
+          if (longVideos.length === 0) {
+            throw new Error('No valid long videos found');
+          }
 
-      // Set the correct channel for this round
-      correctChannel = channelName;
+          // Remove used videos from the list
+          const availableVideos = longVideos.filter(video => !usedVideos.has(video.id));
 
-      return videoId;
+          if (availableVideos.length === 0) {
+            // If all videos have been used, reset the usedVideos set
+            usedVideos.clear();
+          }
+
+          // Pick a random video that has not been used yet
+          const randomIndex = Math.floor(Math.random() * availableVideos.length);
+          const videoId = availableVideos[randomIndex].id;
+
+          // Mark the video as used
+          usedVideos.add(videoId);
+
+          // Set the correct channel for this round
+          correctChannel = channelName;
+
+          return videoId;
+        });
     })
     .catch(error => {
       console.error('Error fetching YouTube data:', error);
       return null;
     });
+}
+
+// Function to convert ISO 8601 duration to seconds (if applicable)
+function parseDurationToSeconds(duration) {
+  if (!duration) return 0;  // If there's no duration, return 0
+
+  const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+  if (!match) return 0;  // If the duration format is unexpected, return 0
+
+  const hours = match[1] ? parseInt(match[1].replace('H', '')) : 0;
+  const minutes = match[2] ? parseInt(match[2].replace('M', '')) : 0;
+  const seconds = match[3] ? parseInt(match[3].replace('S', '')) : 0;
+
+  return hours * 3600 + minutes * 60 + seconds;
 }
 
 // Function to display a random thumbnail
