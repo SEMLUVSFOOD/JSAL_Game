@@ -1,26 +1,35 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #282828;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-
-.channelButtons{
+  font-family: Arial, sans-serif;
+  background-color: #282828;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  gap: 3vw;
+  flex-direction: row; 
+  justify-content: center; /* Ensures the content is centered vertically */
+  align-items: center;
+  height: 100vh; /* Make sure the body takes the full viewport height */
+  width: 100vw;
 }
 
-.channelButtons button img{
+.channelButtons {
+  width: 50vw;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Create 2 columns */
+  gap: 3vw; /* Space between buttons */
+  justify-items: center; /* Centers the buttons horizontally in each grid cell */
+  align-items: center; /* Centers the buttons vertically in each grid cell */
+}
+.thumbnailDIV {
+  width: 50vw;
+  display: flex;
+  justify-content: center;
+}
+
+.channelButtons button img {
   border-radius: 90px;
   width: 100%;
 }
 
-.channelButtons button{
+.channelButtons button {
   border-radius: 95px;
   padding: 0px;
   margin: 0px;
@@ -31,6 +40,10 @@ body {
   align-items: center;
 }
 
-.channelButtons button:hover{
+.channelButtons button:hover {
   cursor: pointer;
+}
+
+#thumbnail {
+  scale: 75%;
 }
