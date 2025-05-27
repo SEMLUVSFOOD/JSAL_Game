@@ -1,123 +1,58 @@
-let videoTitles = {};
-let currentChannel = "";
-let currentTitle = "";
-let score = 0;
-const highScoreKey = "jack-channel-high-score";
+// Use AllOrigins as a proxy to bypass CORS restrictions
+const corsProxy = 'https://api.allorigins.win/get?url=';
 
-let allTitles = [];
-let unusedTitles = [];
+// YouTube Channel IDs (You can find these from each channel's URL)
+const channelIds = [
+    'UCyktGLVQchOpvKgL7GShDWA', // JackMasseyWelsh
+    'UCd15dSPPT-EhTXekA7_UNAQ', // JackSucksAtGeography
+    'UCewMTclBJZPaNEfbf-qYMGA', // JackSucksAtLife
+    'UCxLIJccyaRQDeyu6RzUsPuw'  // JackSucksAtStuff
+];
 
-const sentenceContainer = document.getElementById("sentence-container");
-const input = document.getElementById("guess-input");
-const guessButton = document.getElementById("guess-button");
-const tryAgainButton = document.getElementById("try-again-button");
-const scoreDisplay = document.getElementById("score");
-const highScoreDisplay = document.getElementById("high-score");
-const feedback = document.getElementById("feedback");
-const datalist = document.getElementById("channel-names");
-const hardModeCheckbox = document.getElementById("hard-mode-checkbox");
+// Function to fetch the latest videos from a channel and return a random video ID
+function getRandomVideoIdFromChannel(channelId) {
+    // Updated API request: reduced maxResults and switched to viewCount ordering
+    const apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&order=viewCount&part=snippet&type=video&maxResults=10`;
 
-function populateChannelList() {
-  for (let channel in videoTitles) {
-    let option = document.createElement("option");
-    option.value = channel;
-    datalist.appendChild(option);
-  }
+    // Use AllOrigins proxy to make the request
+    return fetch(corsProxy + encodeURIComponent(apiUrl))
+        .then(response => response.json())
+        .then(data => {
+            // Log the raw response to debug the structure
+            console.log('Raw API Response:', data);
+
+            // Check if the response contains valid data
+            const responseData = JSON.parse(data.contents); // Parse the actual API response
+            if (!responseData.items || responseData.items.length === 0) {
+                throw new Error('No videos found in the API response');
+            }
+
+            const videos = responseData.items;
+            const randomIndex = Math.floor(Math.random() * videos.length);
+            const videoId = videos[randomIndex].id.videoId;
+
+            return videoId;
+        })
+        .catch(error => {
+            console.error('Error fetching YouTube data:', error);
+            return null;
+        });
 }
 
-function buildTitlePool() {
-  allTitles = [];
-  for (let channel in videoTitles) {
-    videoTitles[channel].forEach((title) => {
-      allTitles.push({ channel, title });
+// Function to set the random thumbnail once the video ID is retrieved
+function displayRandomThumbnail() {
+    const randomChannelId = channelIds[Math.floor(Math.random() * channelIds.length)];
+
+    getRandomVideoIdFromChannel(randomChannelId).then(videoId => {
+        if (videoId) {
+            const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+            const thumbnailImage = document.getElementById('thumbnail');
+            thumbnailImage.src = thumbnailUrl;
+        } else {
+            console.error('Could not retrieve video ID');
+        }
     });
-  }
-  unusedTitles = [...allTitles];
 }
 
-function showRandomTitle() {
-  if (unusedTitles.length === 0) {
-    unusedTitles = [...allTitles];
-  }
-
-  const randomIndex = Math.floor(Math.random() * unusedTitles.length);
-  const { channel, title } = unusedTitles.splice(randomIndex, 1)[0];
-
-  currentChannel = channel;
-  currentTitle = title;
-  sentenceContainer.innerText = `"${title}"`;
-
-  input.value = "";
-  input.style.display = "block";
-  guessButton.style.display = "block";
-  tryAgainButton.style.display = "none";
-  feedback.innerText = "";
-}
-
-function checkGuess() {
-  const channelGuess = input.value.trim();
-
-  if (!videoTitles.hasOwnProperty(channelGuess)) {
-    alert("Please choose a channel from the list.");
-    return;
-  }
-
-  if (channelGuess === currentChannel) {
-    score++;
-    feedback.innerText = "";
-    showRandomTitle();
-  } else {
-    input.style.display = "none";
-    guessButton.style.display = "none";
-    tryAgainButton.style.display = "inline-block";
-    feedback.innerText = `Wrong! The correct answer was: ${currentChannel}`;
-  }
-
-  updateScore();
-}
-
-function updateScore() {
-  scoreDisplay.innerText = `Score: ${score}`;
-  let highScore = Number(localStorage.getItem(highScoreKey)) || 0;
-  if (score > highScore) {
-    localStorage.setItem(highScoreKey, score);
-    highScoreDisplay.innerText = `High Score: ${score}`;
-  } else {
-    highScoreDisplay.innerText = `High Score: ${highScore}`;
-  }
-  updateProgressBar();
-}
-
-function updateProgressBar() {
-  const progressBar = document.querySelector(".progressToHighScore");
-  let highScore = Number(localStorage.getItem(highScoreKey)) || 1;
-  let percentage = Math.min((score / highScore) * 100, 100);
-  progressBar.style.width = `${percentage}%`;
-}
-
-function resetGame() {
-  score = 0;
-  showRandomTitle();
-  scoreDisplay.innerText = `Score: ${score}`;
-  updateProgressBar();
-}
-
-guessButton.addEventListener("click", checkGuess);
-tryAgainButton.addEventListener("click", resetGame);
-input.addEventListener("keypress", (e) => { if (e.key === "Enter") checkGuess(); });
-
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("jack_titles.json")
-    .then((response) => response.json())
-    .then((data) => {
-      videoTitles = data;
-      populateChannelList();
-      buildTitlePool();
-      showRandomTitle();
-      updateScore();
-    })
-    .catch((error) => {
-      console.error("Failed to load JSON:", error);
-      sentenceContainer.innerText = "Error loading data!";
-    });
-});
+// Display a random thumbnail when the page loads
+window.onload = displayRandomThumbnail;
